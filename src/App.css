@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+
+.hovered-button:hover {
+  cursor: pointer;
+  box-shadow: 0 0 10px 10px lightgrey;
+  background-color: aliceblue;
+  /* Add any additional styles you want when the button is hovered */
+}
