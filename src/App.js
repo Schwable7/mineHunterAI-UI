@@ -4,7 +4,7 @@ import Structure from "./components/Structure";
 function App() {
   return (
     <div className="App">
-          <Structure />;
+          <Structure />
     </div>
   );
 }
