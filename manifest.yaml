@@ -1,0 +1,7 @@
+---
+applications:
+  - name: minehunter
+    memory: 128M
+    buildpacks:
+      - staticfile_buildpack
+    path: build/
