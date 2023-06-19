@@ -1,18 +1,26 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 
 const Structure = () => {
     const [inputValue, setInputValue] = useState("");
     const [responses, setResponses] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedProject, setSelectedProject] = useState("");
+    const [metadata, setMetadata] = useState([]);
+
+    useEffect(() => {
+        fetch('https://ntc7ifsqnfioiy-5110.proxy.runpod.net/api/metadata') // Your API endpoint
+            .then(response => response.json())
+            .then(data => setMetadata(data));
+    }, []);
+
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
     };
 
     const handleCategoryChange = (e) => {
-        setSelectedCategory(e.target.value);
+        setSelectedProject(e.target.value);
     };
 
     const handleButtonClick = () => {
@@ -20,7 +28,7 @@ const Structure = () => {
         const formData = new URLSearchParams();
         formData.append('user_prompt', inputValue);
         formData.append('status', "");
-        formData.append('project', selectedCategory);
+        formData.append('project', selectedProject);
         // Make a request to the host using the input value
         let runPodUrl = "https://ntc7ifsqnfioiy-5110.proxy.runpod.net/api/prompt_route";
         fetch(runPodUrl, {
@@ -97,21 +105,22 @@ const Structure = () => {
                     width: "350px",
                     boxShadow: "0 0 10px 10px #0000001F",
                 }}>
-                    <InputLabel disableAnimation={"false"} id="category-select-label">Category</InputLabel>
+                    <InputLabel disableAnimation={"false"} id="category-select-label">Project</InputLabel>
                     <Select
                         id="category-select"
                         size="medium"
                         displayEmpty
                         inputProps={{ 'aria-label': 'Without label' }}
                         fullWidth
-                        value={selectedCategory}
+                        value={selectedProject}
                         onChange={handleCategoryChange}
                     >
-                        <MenuItem value={""}></MenuItem>
-                        <MenuItem value={"Category1"}>Category1</MenuItem>
-                        <MenuItem value={"Category2"}>Category2</MenuItem>
-                        <MenuItem value={"Category3"}>Category3</MenuItem>
-                        <MenuItem value={"Category4"}>Category4</MenuItem>
+                        {metadata && metadata.projects ? metadata.projects.map((project, index) => (
+
+                            <MenuItem key={index} value={project.id}>{project.title}</MenuItem>
+
+
+                        )) : null}
                     </Select>
                 </FormControl>
                 <button
@@ -177,9 +186,11 @@ const Structure = () => {
                     >
                         <strong style={{ marginBottom: "16px" }}>Question:</strong> {response.Prompt}
                         {/*{JSON.stringify(response)}*/}
-
+                        <br />
+                        <br />
                         <strong style={{ marginBottom: "16px" }}>Answer:</strong> {response.Answer}
-
+                        <br />
+                        <br />
                         <strong style={{ marginBottom: "16px" }}>Sources:</strong> {response.Sources.map((source) =>(
 
                             <div style={{ marginBottom: "16px" }}>
